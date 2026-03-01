@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="TeamPortal.Api/TeamPortal.Api.csproj" />
+  <Project Path="TeamPortal.Data/TeamPortal.Data.csproj" Id="3b8627a6-01cd-4235-96e1-e8f321648850" />
 </Solution>
