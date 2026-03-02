@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TeamPortal.Api.Dtos;
 using TeamPortal.Api.Services;
 
@@ -40,4 +41,25 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUserAsync(int id, [FromBody]UpdateUserDto updateDto) 
+    {
+        var result = await _userService.UpdateUserAsync(id, updateDto);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    [HttpPost("{id}")]
+    public async Task<IActionResult> UpdatePasswordAsync(int id, UpdatePasswordDto updateDto)
+    {
+        var result = await _userService.UpdatePasswordAsync(id, updateDto);
+
+        if (!result)
+            return BadRequest("User not found or Password is incorrent");
+
+        return NoContent();
+    }
 }

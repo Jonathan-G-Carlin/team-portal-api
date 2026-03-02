@@ -91,5 +91,51 @@ namespace TeamPortal.Api.Services
 
         }
 
+        public async Task<UserResponseDto?> UpdateUserAsync(int Id, UpdateUserDto updateDto)
+        {
+            var user = await _context.Users.FindAsync(Id);
+
+            if (user is null)
+                return null;
+
+            user.FirstName = updateDto.FirstName;
+            user.MiddleName = updateDto.MiddleName;
+            user.FamilyName = updateDto.FamilyName;
+            user.Email = updateDto.Email;
+
+            await _context.SaveChangesAsync();
+
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                FamilyName = user.FamilyName,
+                Email = user.Email,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                CreatedOnUtc = user.CreatedOnUtc
+            };
+        }
+
+        public async Task<bool> UpdatePasswordAsync(int Id, UpdatePasswordDto updateDto)
+        {
+            var user = await _context.Users.FindAsync(Id);
+
+            if (user is null)
+                return false;
+
+            bool isPasswordMatch = BRc.BCrypt.Verify(updateDto.CurrentPassword, user.PasswordHash);
+
+            if (!isPasswordMatch)
+                return false;
+
+            user.PasswordHash = BRc.BCrypt.HashPassword(updateDto.NewPassword);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }
